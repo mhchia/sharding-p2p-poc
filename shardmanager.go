@@ -11,8 +11,8 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	b58 "github.com/mr-tron/base58/base58"
 
-	"github.com/golang/protobuf/proto"
 	pbmsg "github.com/ethresearch/sharding-p2p-poc/pb"
+	"github.com/golang/protobuf/proto"
 	"golang.org/x/crypto/sha3"
 )
 

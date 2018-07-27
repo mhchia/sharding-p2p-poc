@@ -33,6 +33,24 @@ func callRPCAddPeer(rpcAddr string, ipAddr string, port int, seed int64) {
 	log.Printf("rpcclient:AddPeer: result=%v", res)
 }
 
+func callRPCListShardPeer(rpcAddr string, shardID ShardIDType) {
+	conn, err := grpc.Dial(rpcAddr, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	client := pb.NewPocClient(conn)
+	listShardPeerReq := &pb.RPCListShardPeerReq{
+		ShardID: shardID,
+	}
+	log.Printf("rpcclient:ListShardPeerReq: sending=%v", listShardPeerReq)
+	res, err := client.ListShardPeer(context.Background(), listShardPeerReq)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("rpcclient:ListShardPeerReq: result=%v", res)
+}
+
 func callRPCSubscribeShard(rpcAddr string, shardIDs []ShardIDType) {
 	conn, err := grpc.Dial(rpcAddr, grpc.WithInsecure())
 	if err != nil {
@@ -137,6 +155,19 @@ func (s *server) AddPeer(ctx context.Context, req *pb.RPCAddPeerReq) (*pb.RPCRep
 	return res, nil
 }
 
+func (s *server) ListShardPeer(
+	ctx context.Context,
+	req *pb.RPCListShardPeerReq) (*pb.RPCReply, error) {
+	shardID := req.GetShardID()
+	shardCollationTopic := getCollationsTopic(shardID)
+	shardPeers := s.node.pubsubService.ListPeers(shardCollationTopic)
+	res := &pb.RPCReply{
+		Message: fmt.Sprintf("Shard %v peers: %v", shardID, shardPeers),
+		Status:  true,
+	}
+	return res, nil
+}
+
 func (s *server) SubscribeShard(
 	ctx context.Context,
 	req *pb.RPCSubscribeShardReq) (*pb.RPCReply, error) {
@@ -228,6 +259,6 @@ func runRPCServer(n *Node, addr string) {
 	}
 	s := grpc.NewServer()
 	pb.RegisterPocServer(s, &server{node: n})
+	log.Printf("%v: rpcserver: listening to %v", n.Name(), addr)
 	s.Serve(lis)
-	log.Printf("rpcserver: listening to %v", addr)
 }

@@ -94,9 +94,6 @@ func makeNode(
 
 	// Make a host that listens on the given multiaddress
 	node := NewNode(ctx, routedHost, int(randseed))
-
-	log.Printf("I am %s\n", node.GetFullAddr())
-
 	return node, nil
 }
 
@@ -172,6 +169,15 @@ func runClient(rpcAddr string, cliArgs []string) {
 			panic(err)
 		}
 		callRPCAddPeer(rpcAddr, targetIP, targetPort, targetSeed)
+	} else if rpcCmd == "listshardpeer" {
+		if len(rpcArgs) != 1 {
+			log.Fatalf("Client: usage: listshardpeer shardID")
+		}
+		shardID, err := strconv.ParseInt(rpcArgs[0], 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		callRPCListShardPeer(rpcAddr, shardID)
 	} else if rpcCmd == "subshard" {
 		if len(rpcArgs) == 0 {
 			log.Fatalf("Client: usage: subshard shard0 shard1 ...")

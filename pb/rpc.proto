@@ -4,7 +4,8 @@ package protocols.p2p;
 
 service Poc {
   // Sends a greeting
-  rpc AddPeer (RPCAddPeerReq) returns (RPCReply) {}
+  rpc AddPeer(RPCAddPeerReq) returns (RPCReply) {}
+  rpc ListShardPeer(RPCListShardPeerReq) returns (RPCReply) {}
   rpc SubscribeShard(RPCSubscribeShardReq) returns (RPCReply) {}
   rpc UnsubscribeShard(RPCUnsubscribeShardReq) returns (RPCReply) {}
   rpc GetSubscribedShard(RPCGetSubscribedShardReq) returns (RPCGetSubscribedShardReply) {}
@@ -17,7 +18,10 @@ message RPCAddPeerReq {
   int32 port = 2;
   int64 seed = 3;
 }
-
+// ListShardPeer
+message RPCListShardPeerReq {
+  int64 shardID = 1;
+}
 // SubscribeShard
 message RPCSubscribeShardReq {
   repeated int64 shardIDs = 1;

@@ -12,16 +12,44 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 // a protocol define a set of reuqest and responses
 type AddPeerRequest struct {
 	// method specific data
-	Message string `protobuf:"bytes,1,opt,name=message" json:"message,omitempty"`
+	Message              string   `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AddPeerRequest) Reset()                    { *m = AddPeerRequest{} }
-func (m *AddPeerRequest) String() string            { return proto.CompactTextString(m) }
-func (*AddPeerRequest) ProtoMessage()               {}
-func (*AddPeerRequest) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (m *AddPeerRequest) Reset()         { *m = AddPeerRequest{} }
+func (m *AddPeerRequest) String() string { return proto.CompactTextString(m) }
+func (*AddPeerRequest) ProtoMessage()    {}
+func (*AddPeerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_minimal_329fcaf76ac13198, []int{0}
+}
+func (m *AddPeerRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddPeerRequest.Unmarshal(m, b)
+}
+func (m *AddPeerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddPeerRequest.Marshal(b, m, deterministic)
+}
+func (dst *AddPeerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddPeerRequest.Merge(dst, src)
+}
+func (m *AddPeerRequest) XXX_Size() int {
+	return xxx_messageInfo_AddPeerRequest.Size(m)
+}
+func (m *AddPeerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddPeerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddPeerRequest proto.InternalMessageInfo
 
 func (m *AddPeerRequest) GetMessage() string {
 	if m != nil {
@@ -32,13 +60,35 @@ func (m *AddPeerRequest) GetMessage() string {
 
 type AddPeerResponse struct {
 	// response specific data
-	Success bool `protobuf:"varint,1,opt,name=success" json:"success,omitempty"`
+	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AddPeerResponse) Reset()                    { *m = AddPeerResponse{} }
-func (m *AddPeerResponse) String() string            { return proto.CompactTextString(m) }
-func (*AddPeerResponse) ProtoMessage()               {}
-func (*AddPeerResponse) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{1} }
+func (m *AddPeerResponse) Reset()         { *m = AddPeerResponse{} }
+func (m *AddPeerResponse) String() string { return proto.CompactTextString(m) }
+func (*AddPeerResponse) ProtoMessage()    {}
+func (*AddPeerResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_minimal_329fcaf76ac13198, []int{1}
+}
+func (m *AddPeerResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddPeerResponse.Unmarshal(m, b)
+}
+func (m *AddPeerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddPeerResponse.Marshal(b, m, deterministic)
+}
+func (dst *AddPeerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddPeerResponse.Merge(dst, src)
+}
+func (m *AddPeerResponse) XXX_Size() int {
+	return xxx_messageInfo_AddPeerResponse.Size(m)
+}
+func (m *AddPeerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddPeerResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddPeerResponse proto.InternalMessageInfo
 
 func (m *AddPeerResponse) GetSuccess() bool {
 	if m != nil {
@@ -48,15 +98,37 @@ func (m *AddPeerResponse) GetSuccess() bool {
 }
 
 type Collation struct {
-	ShardID int64  `protobuf:"varint,1,opt,name=shardID" json:"shardID,omitempty"`
-	Period  int64  `protobuf:"varint,2,opt,name=period" json:"period,omitempty"`
-	Blobs   string `protobuf:"bytes,3,opt,name=blobs" json:"blobs,omitempty"`
+	ShardID              int64    `protobuf:"varint,1,opt,name=shardID,proto3" json:"shardID,omitempty"`
+	Period               int64    `protobuf:"varint,2,opt,name=period,proto3" json:"period,omitempty"`
+	Blobs                string   `protobuf:"bytes,3,opt,name=blobs,proto3" json:"blobs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Collation) Reset()                    { *m = Collation{} }
-func (m *Collation) String() string            { return proto.CompactTextString(m) }
-func (*Collation) ProtoMessage()               {}
-func (*Collation) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{2} }
+func (m *Collation) Reset()         { *m = Collation{} }
+func (m *Collation) String() string { return proto.CompactTextString(m) }
+func (*Collation) ProtoMessage()    {}
+func (*Collation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_minimal_329fcaf76ac13198, []int{2}
+}
+func (m *Collation) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Collation.Unmarshal(m, b)
+}
+func (m *Collation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Collation.Marshal(b, m, deterministic)
+}
+func (dst *Collation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Collation.Merge(dst, src)
+}
+func (m *Collation) XXX_Size() int {
+	return xxx_messageInfo_Collation.Size(m)
+}
+func (m *Collation) XXX_DiscardUnknown() {
+	xxx_messageInfo_Collation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Collation proto.InternalMessageInfo
 
 func (m *Collation) GetShardID() int64 {
 	if m != nil {
@@ -80,15 +152,37 @@ func (m *Collation) GetBlobs() string {
 }
 
 type CollationRequest struct {
-	ShardID int64  `protobuf:"varint,1,opt,name=shardID" json:"shardID,omitempty"`
-	Period  int64  `protobuf:"varint,2,opt,name=period" json:"period,omitempty"`
-	Hash    string `protobuf:"bytes,3,opt,name=hash" json:"hash,omitempty"`
+	ShardID              int64    `protobuf:"varint,1,opt,name=shardID,proto3" json:"shardID,omitempty"`
+	Period               int64    `protobuf:"varint,2,opt,name=period,proto3" json:"period,omitempty"`
+	Hash                 string   `protobuf:"bytes,3,opt,name=hash,proto3" json:"hash,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CollationRequest) Reset()                    { *m = CollationRequest{} }
-func (m *CollationRequest) String() string            { return proto.CompactTextString(m) }
-func (*CollationRequest) ProtoMessage()               {}
-func (*CollationRequest) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{3} }
+func (m *CollationRequest) Reset()         { *m = CollationRequest{} }
+func (m *CollationRequest) String() string { return proto.CompactTextString(m) }
+func (*CollationRequest) ProtoMessage()    {}
+func (*CollationRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_minimal_329fcaf76ac13198, []int{3}
+}
+func (m *CollationRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CollationRequest.Unmarshal(m, b)
+}
+func (m *CollationRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CollationRequest.Marshal(b, m, deterministic)
+}
+func (dst *CollationRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CollationRequest.Merge(dst, src)
+}
+func (m *CollationRequest) XXX_Size() int {
+	return xxx_messageInfo_CollationRequest.Size(m)
+}
+func (m *CollationRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CollationRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CollationRequest proto.InternalMessageInfo
 
 func (m *CollationRequest) GetShardID() int64 {
 	if m != nil {
@@ -112,14 +206,36 @@ func (m *CollationRequest) GetHash() string {
 }
 
 type CollationResponse struct {
-	Success   bool       `protobuf:"varint,1,opt,name=success" json:"success,omitempty"`
-	Collation *Collation `protobuf:"bytes,2,opt,name=collation" json:"collation,omitempty"`
+	Success              bool       `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Collation            *Collation `protobuf:"bytes,2,opt,name=collation,proto3" json:"collation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
 }
 
-func (m *CollationResponse) Reset()                    { *m = CollationResponse{} }
-func (m *CollationResponse) String() string            { return proto.CompactTextString(m) }
-func (*CollationResponse) ProtoMessage()               {}
-func (*CollationResponse) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{4} }
+func (m *CollationResponse) Reset()         { *m = CollationResponse{} }
+func (m *CollationResponse) String() string { return proto.CompactTextString(m) }
+func (*CollationResponse) ProtoMessage()    {}
+func (*CollationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_minimal_329fcaf76ac13198, []int{4}
+}
+func (m *CollationResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CollationResponse.Unmarshal(m, b)
+}
+func (m *CollationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CollationResponse.Marshal(b, m, deterministic)
+}
+func (dst *CollationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CollationResponse.Merge(dst, src)
+}
+func (m *CollationResponse) XXX_Size() int {
+	return xxx_messageInfo_CollationResponse.Size(m)
+}
+func (m *CollationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CollationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CollationResponse proto.InternalMessageInfo
 
 func (m *CollationResponse) GetSuccess() bool {
 	if m != nil {
@@ -136,13 +252,35 @@ func (m *CollationResponse) GetCollation() *Collation {
 }
 
 type NotifyShardsRequest struct {
-	ShardIDs []int64 `protobuf:"varint,1,rep,packed,name=shardIDs" json:"shardIDs,omitempty"`
+	ShardIDs             []int64  `protobuf:"varint,1,rep,packed,name=shardIDs,proto3" json:"shardIDs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *NotifyShardsRequest) Reset()                    { *m = NotifyShardsRequest{} }
-func (m *NotifyShardsRequest) String() string            { return proto.CompactTextString(m) }
-func (*NotifyShardsRequest) ProtoMessage()               {}
-func (*NotifyShardsRequest) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{5} }
+func (m *NotifyShardsRequest) Reset()         { *m = NotifyShardsRequest{} }
+func (m *NotifyShardsRequest) String() string { return proto.CompactTextString(m) }
+func (*NotifyShardsRequest) ProtoMessage()    {}
+func (*NotifyShardsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_minimal_329fcaf76ac13198, []int{5}
+}
+func (m *NotifyShardsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NotifyShardsRequest.Unmarshal(m, b)
+}
+func (m *NotifyShardsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NotifyShardsRequest.Marshal(b, m, deterministic)
+}
+func (dst *NotifyShardsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NotifyShardsRequest.Merge(dst, src)
+}
+func (m *NotifyShardsRequest) XXX_Size() int {
+	return xxx_messageInfo_NotifyShardsRequest.Size(m)
+}
+func (m *NotifyShardsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NotifyShardsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NotifyShardsRequest proto.InternalMessageInfo
 
 func (m *NotifyShardsRequest) GetShardIDs() []int64 {
 	if m != nil {
@@ -160,9 +298,9 @@ func init() {
 	proto.RegisterType((*NotifyShardsRequest)(nil), "protocols.p2p.NotifyShardsRequest")
 }
 
-func init() { proto.RegisterFile("minimal.proto", fileDescriptor1) }
+func init() { proto.RegisterFile("minimal.proto", fileDescriptor_minimal_329fcaf76ac13198) }
 
-var fileDescriptor1 = []byte{
+var fileDescriptor_minimal_329fcaf76ac13198 = []byte{
 	// 251 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x90, 0xcf, 0x4b, 0xc4, 0x30,
 	0x10, 0x85, 0x59, 0xab, 0xeb, 0x76, 0x64, 0xfd, 0x11, 0x45, 0x82, 0x27, 0xc9, 0x69, 0x51, 0x28,
