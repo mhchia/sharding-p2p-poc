@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"log"
 	mrand "math/rand"
+	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	// gologging "gx/ipfs/QmQvJiADDe7JR4m968MwXobTCCzUqQkP87aRHe29MEBGHV/go-logging"
 	ds "github.com/ipfs/go-datastore"
@@ -18,6 +21,13 @@ import (
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
+	opentracing "github.com/opentracing/opentracing-go"
+	gologging "github.com/whyrusleeping/go-logging"
+
+	"sourcegraph.com/sourcegraph/appdash"
+	appdashtracer "sourcegraph.com/sourcegraph/appdash/opentracing"
+	"sourcegraph.com/sourcegraph/appdash/traceapp"
+)
 
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 )
@@ -104,6 +114,8 @@ const (
 	defaultListenPort = 10000
 	defaultRPCPort    = 13000
 )
+
+var tracer opentracing.Tracer
 
 func main() {
 	// LibP2P code uses golog to log messages. They log with different
