@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"log"
 	mrand "math/rand"
-	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -26,7 +24,6 @@ import (
 
 	"sourcegraph.com/sourcegraph/appdash"
 	appdashtracer "sourcegraph.com/sourcegraph/appdash/opentracing"
-	"sourcegraph.com/sourcegraph/appdash/traceapp"
 )
 
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
@@ -115,8 +112,6 @@ const (
 	defaultRPCPort    = 13000
 )
 
-var tracer opentracing.Tracer
-
 func main() {
 	// LibP2P code uses golog to log messages. They log with different
 	// string IDs (i.e. "swarm"). We can control the verbosity level for
@@ -163,6 +158,21 @@ func runServer(
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Try setting up opentracing+appdash
+	memStore := appdash.NewMemoryStore()
+	store := &appdash.RecentStore{
+		MinEvictAge: 20 * time.Second,
+		DeleteStore: memStore,
+	}
+
+	// collector := appdash.NewLocalCollector(store)
+	// tracer = appdashtracer.NewTracer(collector)
+	remote_collector := appdash.NewRemoteCollector("localhost:8701")
+	tracer := appdashtracer.NewTracer(remote_collector)
+	opentracing.InitGlobalTracer(tracer)
+	// End of tracing setup
+
 	runRPCServer(node, rpcAddr)
 }
 

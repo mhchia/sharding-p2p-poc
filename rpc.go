@@ -120,7 +120,8 @@ type server struct {
 
 func (s *server) AddPeer(ctx context.Context, req *pb.RPCAddPeerReq) (*pb.RPCReply, error) {
 	// Add span for AddPeer
-	span := opentracing.StartSpan("AddPeer")
+	parentSpan := opentracing.SpanFromContext(ctx)
+	span := opentracing.StartSpan("AddPeer", opentracing.ChildOf(parentSpan.Context()))
 	defer span.Finish()
 
 	log.Printf("rpcserver:AddPeer: receive=%v", req)
@@ -149,7 +150,8 @@ func (s *server) SubscribeShard(
 	ctx context.Context,
 	req *pb.RPCSubscribeShardReq) (*pb.RPCReply, error) {
 	// Add span for SubscribeShard
-	span := opentracing.StartSpan("SubscribeShard")
+	parentSpan := opentracing.SpanFromContext(ctx)
+	span := opentracing.StartSpan("SubscribeShard", opentracing.ChildOf(parentSpan.Context()))
 	defer span.Finish()
 
 	log.Printf("rpcserver:SubscribeShardReq: receive=%v", req)
@@ -174,7 +176,8 @@ func (s *server) UnsubscribeShard(
 	ctx context.Context,
 	req *pb.RPCUnsubscribeShardReq) (*pb.RPCReply, error) {
 	// Add span for UnsubscribeShard
-	span := opentracing.StartSpan("UnsubscribeShard")
+	parentSpan := opentracing.SpanFromContext(ctx)
+	span := opentracing.StartSpan("UnsubscribeShard", opentracing.ChildOf(parentSpan.Context()))
 	defer span.Finish()
 
 	log.Printf("rpcserver:UnsubscribeShardReq: receive=%v", req)
@@ -199,7 +202,8 @@ func (s *server) GetSubscribedShard(
 	ctx context.Context,
 	req *pb.RPCGetSubscribedShardReq) (*pb.RPCGetSubscribedShardReply, error) {
 	// Add span for GetSubscribedShard
-	span := opentracing.StartSpan("GetSubscribedShard")
+	parentSpan := opentracing.SpanFromContext(ctx)
+	span := opentracing.StartSpan("GetSubscribedShard", opentracing.ChildOf(parentSpan.Context()))
 	defer span.Finish()
 
 	log.Printf("rpcserver:GetSubscribedShard: receive=%v", req)
@@ -217,7 +221,8 @@ func (s *server) BroadcastCollation(
 	ctx context.Context,
 	req *pb.RPCBroadcastCollationReq) (*pb.RPCReply, error) {
 	// Add span for BroadcastCollation
-	span := opentracing.StartSpan("BroadcastCollation")
+	parentSpan := opentracing.SpanFromContext(ctx)
+	span := opentracing.StartSpan("BroadcastCollation", opentracing.ChildOf(parentSpan.Context()))
 	defer span.Finish()
 
 	log.Printf("rpcserver:BroadcastCollationReq: receive=%v", req)
@@ -260,6 +265,9 @@ func runRPCServer(n *Node, addr string) {
 	span := opentracing.StartSpan("Server")
 	span.SetTag("Node", n)
 	span.SetTag("Address", addr)
+	span.SetBaggageItem("Baggage-Node", fmt.Sprintf("%v", n))
+	span.SetBaggageItem("Baggage-Address", addr)
+	time.Sleep(200 * time.Millisecond)
 	defer span.Finish()
 
 	lis, err := net.Listen("tcp", addr)
