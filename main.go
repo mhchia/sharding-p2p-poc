@@ -8,7 +8,6 @@ import (
 	mrand "math/rand"
 	"strconv"
 	"strings"
-	"time"
 
 	// gologging "gx/ipfs/QmQvJiADDe7JR4m968MwXobTCCzUqQkP87aRHe29MEBGHV/go-logging"
 	ds "github.com/ipfs/go-datastore"
@@ -20,11 +19,9 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	opentracing "github.com/opentracing/opentracing-go"
-	gologging "github.com/whyrusleeping/go-logging"
 
 	"sourcegraph.com/sourcegraph/appdash"
 	appdashtracer "sourcegraph.com/sourcegraph/appdash/opentracing"
-)
 
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 )
@@ -159,19 +156,11 @@ func runServer(
 		log.Fatal(err)
 	}
 
-	// Try setting up opentracing+appdash
-	memStore := appdash.NewMemoryStore()
-	store := &appdash.RecentStore{
-		MinEvictAge: 20 * time.Second,
-		DeleteStore: memStore,
-	}
-
-	// collector := appdash.NewLocalCollector(store)
-	// tracer = appdashtracer.NewTracer(collector)
+	// Set up Opentracing and Appdash tracer
 	remote_collector := appdash.NewRemoteCollector("localhost:8701")
 	tracer := appdashtracer.NewTracer(remote_collector)
 	opentracing.InitGlobalTracer(tracer)
-	// End of tracing setup
+	// End of tracer setup
 
 	runRPCServer(node, rpcAddr)
 }
