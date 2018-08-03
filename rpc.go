@@ -6,6 +6,9 @@ import (
 	"log"
 	"math/rand"
 	"net"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"google.golang.org/grpc"
@@ -260,7 +263,16 @@ func runRPCServer(n *Node, addr string) {
 	// Start a new trace
 	span := opentracing.StartSpan("RPC Server")
 	span.SetTag("Seed Number", n.number)
-	defer span.Finish()
+
+	// Catch interupt signal
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		span.Finish()
+		log.Printf("Closing RPC server...")
+		os.Exit(1)
+	}()
 
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
