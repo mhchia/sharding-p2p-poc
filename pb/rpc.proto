@@ -9,6 +9,7 @@ service Poc {
   rpc UnsubscribeShard(RPCUnsubscribeShardReq) returns (RPCReply) {}
   rpc GetSubscribedShard(RPCGetSubscribedShardReq) returns (RPCGetSubscribedShardReply) {}
   rpc BroadcastCollation(RPCBroadcastCollationReq) returns (RPCReply) {}
+  rpc StopServer(RPCStopServerReq) returns (RPCReply) {}
 }
 
 // AddPeer
@@ -39,6 +40,9 @@ message RPCBroadcastCollationReq {
   int32 number = 2;
   int32 size = 3;
   int32 period = 4;
+}
+// StopServer
+message RPCStopServerReq {
 }
 
 message RPCReply {
