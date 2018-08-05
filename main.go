@@ -240,6 +240,8 @@ func runClient(rpcAddr string, cliArgs []string) {
 			collationSize,
 			timeInMs,
 		)
+	} else if rpcCmd == "stop" {
+		callRPCStopServer(rpcAddr)
 	} else {
 		log.Fatalf("Client: wrong cmd '%v'", rpcCmd)
 	}

@@ -116,6 +116,22 @@ func callRPCBroadcastCollation(
 	log.Printf("rpcclient:BroadcastCollation: result=%v", res)
 }
 
+func callRPCStopServer(rpcAddr string) {
+	conn, err := grpc.Dial(rpcAddr, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	client := pb.NewPocClient(conn)
+	stopServerReq := &pb.RPCStopServerReq{}
+	log.Printf("rpcclient:StopServerReq: sending=%v", stopServerReq)
+	res, err := client.StopServer(context.Background(), stopServerReq)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Print(res)
+}
+
 type server struct {
 	pb.PocServer
 	node       *Node
@@ -256,6 +272,23 @@ func (s *server) BroadcastCollation(
 	span.SetTag("Number of collations", numCollations)
 	span.SetTag("Size of collation", sizeInBytes)
 	span.SetTag("Shard", shardID)
+	return res, nil
+}
+
+func (s *server) StopServer(
+	ctx context.Context,
+	req *pb.RPCStopServerReq) (*pb.RPCReply, error) {
+	// Add span for StopServer
+	span := opentracing.StartSpan("StopServer", opentracing.ChildOf(s.parentSpan.Context()))
+
+	log.Printf("rpcserver:StopServer: receive=%v", req)
+
+	res := &pb.RPCReply{
+		Message: fmt.Sprintf("Closed RPC server"),
+		Status:  true,
+	}
+
+	span.Finish()
 	return res, nil
 }
 
