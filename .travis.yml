@@ -16,7 +16,7 @@ install:
   - make deps
 
 before_install:
-  - go get -t ./...
+  - go get -d .
 
 script:
   - go test -v ./...
