@@ -136,6 +136,7 @@ type server struct {
 	pb.PocServer
 	node       *Node
 	parentSpan opentracing.Span
+	rpcServer  *grpc.Server
 }
 
 func (s *server) AddPeer(ctx context.Context, req *pb.RPCAddPeerReq) (*pb.RPCReply, error) {
@@ -282,13 +283,15 @@ func (s *server) StopServer(
 	span := opentracing.StartSpan("StopServer", opentracing.ChildOf(s.parentSpan.Context()))
 
 	log.Printf("rpcserver:StopServer: receive=%v", req)
+	time.Sleep(time.Millisecond * 500)
+	span.Finish()
+	s.parentSpan.Finish()
+	s.rpcServer.Stop()
 
 	res := &pb.RPCReply{
 		Message: fmt.Sprintf("Closed RPC server"),
 		Status:  true,
 	}
-
-	span.Finish()
 	return res, nil
 }
 
@@ -312,7 +315,7 @@ func runRPCServer(n *Node, addr string) {
 		log.Fatal(err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterPocServer(s, &server{node: n, parentSpan: span})
+	pb.RegisterPocServer(s, &server{node: n, parentSpan: span, rpcServer: s})
 	s.Serve(lis)
 	log.Printf("rpcserver: listening to %v", addr)
 }
