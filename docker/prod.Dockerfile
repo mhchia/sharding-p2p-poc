@@ -4,7 +4,7 @@ RUN apk add --no-cache make gcc musl-dev linux-headers libc6-compat
 FROM golang:1.10.3 AS go-builder
 WORKDIR /go
 COPY . /go/
-RUN go get -d -v .
+RUN go get -t -v ./...
 RUN make deps
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -v -o main .
 
