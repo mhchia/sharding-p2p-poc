@@ -1,5 +1,5 @@
 language: go
-
+go_import_path: github.com/ethresearch/sharding-p2p-poc
 sudo: false
 
 go:
