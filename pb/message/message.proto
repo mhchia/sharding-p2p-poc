@@ -2,6 +2,16 @@ syntax = "proto3";
 
 package proto.message;
 
+message Response {
+    Status status = 1;
+    string message = 2;
+
+    enum Status {
+        SUCCESS = 0;
+        FAILURE = 1;
+    }
+}
+
 // a protocol define a set of reuqest and responses
 message AddPeerRequest {
     // method specific data
@@ -11,11 +21,10 @@ message AddPeerRequest {
 
 message AddPeerResponse {
     // response specific data
-    bool success = 1;  // TODO: change to a inheritable message
+    Response response = 1;
 
     // ... add any additional message data here
 }
-
 
 message Collation {
     int64 shardID = 1;
@@ -30,12 +39,17 @@ message CollationRequest {
 }
 
 message CollationResponse {
-    bool success = 1;
+    Response response = 1;
     Collation collation = 2;
 }
 
-message Peers {
-    repeated string peers = 1;
+message ShardPeerRequest {
+    int64 shardID = 1;
+}
+
+message ShardPeerResponse {
+    Response response = 1;
+    repeated string peers = 2;
 }
 
 message NotifyShardsRequest {

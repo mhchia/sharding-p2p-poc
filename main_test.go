@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -274,11 +275,24 @@ func TestRequestCollation(t *testing.T) {
 	defer cancel()
 	node0, node1 := makePeerNodes(t, ctx)
 	node0.sendCollationRequest(node1.ID(), 0, 1, "2")
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Millisecond * 1000)
 }
 
 func TestRequestCollationNotFound(t *testing.T) {
 	// TODO:
+}
+
+func TestRequestShardPeer(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	node0, node1 := makePeerNodes(t, ctx)
+	node1.ListenShard(0)
+	time.Sleep(time.Millisecond * 100)
+	peerIDs, err := node0.requestShardPeer(ctx, node1.ID(), 0)
+	if err != nil {
+		t.Errorf("Error occurred when requesting shard peer: %v", err)
+	}
+	fmt.Println("!@# peerIDs = ", peerIDs)
 }
 
 func TestRouting(t *testing.T) {

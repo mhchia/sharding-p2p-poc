@@ -3,9 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
+	"github.com/golang/protobuf/proto"
 	host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -54,4 +57,15 @@ func (n *Node) IsPeer(peerID peer.ID) bool {
 		}
 	}
 	return false
+}
+
+func (n *Node) sendMessage(peerID peer.ID, protocolID protocol.ID, data proto.Message) bool {
+	// send the response
+	s, respErr := n.NewStream(context.Background(), peerID, protocolID)
+	if respErr != nil {
+		log.Println(respErr)
+		return false
+	}
+
+	return sendProtoMessage(data, s)
 }
