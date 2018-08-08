@@ -155,14 +155,23 @@ func (s *server) AddPeer(ctx context.Context, req *pb.RPCAddPeerReq) (*pb.RPCRep
 	if err != nil {
 		log.Fatal(err)
 	}
-	s.node.AddPeer(mAddr)
-	time.Sleep(time.Second * 1)
-	res := &pb.RPCReply{
-		Message: fmt.Sprintf("Added Peer %v:%v, pid=%v!", req.Ip, req.Port, targetPID),
-		Status:  true,
+
+	var replyMsg string
+	var status bool
+	if success := s.node.AddPeer(mAddr); success {
+		replyMsg = fmt.Sprintf("Added Peer %v:%v, pid=%v!", req.Ip, req.Port, targetPID)
+		status = true
+		// Tag the span with peer info
+		span.SetTag("Peer info", fmt.Sprintf("%v:%v", req.Ip, req.Port))
+	} else {
+		replyMsg = fmt.Sprintf("Failed to add Peer %v:%v, pid=%v!", req.Ip, req.Port, targetPID)
+		status = false
 	}
-	// Tag the span with peer info
-	span.SetTag("Peer info", fmt.Sprintf("%v:%v", req.Ip, req.Port))
+	span.SetTag("Status", status)
+	res := &pb.RPCReply{
+		Message: replyMsg,
+		Status:  status,
+	}
 	return res, nil
 }
 
@@ -254,6 +263,7 @@ func (s *server) BroadcastCollation(
 		time.Sleep(time.Millisecond * time.Duration(timeInMs))
 		randBytes := make([]byte, sizeInBytes)
 		rand.Read(randBytes)
+		// TODO: catching error
 		s.node.broadcastCollation(
 			ShardIDType(shardID),
 			int64(i),
