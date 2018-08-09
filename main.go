@@ -157,9 +157,9 @@ func runServer(
 	}
 
 	// Set up Opentracing and Appdash tracer
-	remote_collector := appdash.NewRemoteCollector("localhost:8701")
-	tracer := appdashtracer.NewTracer(remote_collector)
-	opentracing.InitGlobalTracer(tracer)
+	remoteCollector := appdash.NewRemoteCollector("localhost:8701")
+	tracer := appdashtracer.NewTracer(remoteCollector)
+	opentracing.SetGlobalTracer(tracer)
 	// End of tracer setup
 
 	runRPCServer(node, rpcAddr)
