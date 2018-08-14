@@ -161,7 +161,7 @@ func (n *ShardManager) connectShardNodes(shardID ShardIDType) error {
 	return nil
 }
 
-func (n *ShardManager) ListenShard(shardID ShardIDType) {
+func (n *ShardManager) ListenShard(ctx context.Context, shardID ShardIDType) {
 	if n.IsShardListened(shardID) {
 		return
 	}
@@ -172,7 +172,7 @@ func (n *ShardManager) ListenShard(shardID ShardIDType) {
 
 	// shardCollations protocol
 	n.SubscribeShardCollations(shardID)
-	n.ListenShardCollations(shardID)
+	n.ListenShardCollations(ctx, shardID)
 }
 
 func (n *ShardManager) UnlistenShard(shardID ShardIDType) {
@@ -267,7 +267,7 @@ func (n *ShardManager) PublishListeningShards() {
 
 // shard collations
 
-func (n *ShardManager) ListenShardCollations(shardID ShardIDType) {
+func (n *ShardManager) ListenShardCollations(ctx context.Context, shardID ShardIDType) {
 	if !n.IsShardCollationsSubscribed(shardID) {
 		return
 	}
@@ -276,7 +276,7 @@ func (n *ShardManager) ListenShardCollations(shardID ShardIDType) {
 	go func() {
 		for {
 			// TODO: consider to pass the context from outside?
-			msg, err := shardCollationsSub.Next(context.Background())
+			msg, err := shardCollationsSub.Next(ctx)
 			if err != nil {
 				// log.Print(err)
 				return

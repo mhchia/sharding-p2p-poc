@@ -69,7 +69,7 @@ func (s *server) SubscribeShard(
 
 	log.Printf("rpcserver:SubscribeShardReq: receive=%v", req)
 	for _, shardID := range req.ShardIDs {
-		s.node.ListenShard(shardID)
+		s.node.ListenShard(ctx, shardID)
 		time.Sleep(time.Millisecond * 30)
 	}
 	s.node.PublishListeningShards()

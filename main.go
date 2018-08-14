@@ -35,6 +35,7 @@ func makeKey(seed int) (ic.PrivKey, peer.ID, error) {
 	// If the seed is zero, use real cryptographic randomness. Otherwise, use a
 	// deterministic randomness source to make generated keys stay the same
 	// across multiple runs
+	// TODO: currently we use a fixed randomness
 	r := mrand.New(mrand.NewSource(int64(seed)))
 	// r := rand.Reader
 
@@ -96,12 +97,8 @@ func makeNode(
 			return nil, err
 		}
 	}
-
 	// Make a host that listens on the given multiaddress
 	node := NewNode(ctx, routedHost, int(randseed))
-
-	log.Printf("I am %s\n", node.GetFullAddr())
-
 	return node, nil
 }
 
@@ -163,6 +160,7 @@ func runServer(
 	opentracing.SetGlobalTracer(tracer)
 	// End of tracer setup
 
+	log.Printf("Node %v is up.\n", node.GetFullAddr())
 	runRPCServer(node, rpcAddr)
 }
 
