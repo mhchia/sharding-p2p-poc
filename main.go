@@ -34,6 +34,7 @@ func makeKey(seed int64) (ic.PrivKey, peer.ID, error) {
 	// If the seed is zero, use real cryptographic randomness. Otherwise, use a
 	// deterministic randomness source to make generated keys stay the same
 	// across multiple runs
+	// TODO: currently we use a fixed randomness
 	r := mrand.New(mrand.NewSource(seed))
 	// r := rand.Reader
 
@@ -95,12 +96,8 @@ func makeNode(
 			return nil, err
 		}
 	}
-
 	// Make a host that listens on the given multiaddress
 	node := NewNode(ctx, routedHost, int(randseed))
-
-	log.Printf("I am %s\n", node.GetFullAddr())
-
 	return node, nil
 }
 
@@ -116,7 +113,6 @@ func main() {
 	// golog.SetAllLoggers(gologging.INFO) // Change to DEBUG for extra info
 
 	// Parse options from the command line
-
 	seed := flag.Int64("seed", 0, "set random seed for id generation")
 	listenPort := flag.Int(
 		"port",
@@ -162,6 +158,7 @@ func runServer(
 	opentracing.SetGlobalTracer(tracer)
 	// End of tracer setup
 
+	log.Printf("Node %v is up.\n", node.GetFullAddr())
 	runRPCServer(node, rpcAddr)
 }
 

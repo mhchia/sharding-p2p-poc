@@ -48,7 +48,7 @@ func (n *Node) GetFullAddr() string {
 
 // TODO: should be changed to `Knows` and `HasConnections`
 func (n *Node) IsPeer(peerID peer.ID) bool {
-	for _, value := range n.Peerstore().Peers() {
+	for _, value := range n.Network().Peers() {
 		if value == peerID {
 			return true
 		}
