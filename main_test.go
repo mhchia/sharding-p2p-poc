@@ -248,7 +248,7 @@ func TestRequestCollation(t *testing.T) {
 	connectBar(t, ctx, nodes)
 	shardID := ShardIDType(1)
 	period := 42
-	collation, err := node0.requestCollation(ctx, node1.ID(), shardID, period, "2")
+	collation, err := nodes[0].requestCollation(ctx, nodes[1].ID(), shardID, period, "2")
 	if err != nil {
 		t.Error("request collation failed")
 	}
