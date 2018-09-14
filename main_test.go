@@ -3,16 +3,25 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"testing"
 	"time"
 
-	pbevent "github.com/ethresearch/sharding-p2p-poc/pb/event"
-	pbmsg "github.com/ethresearch/sharding-p2p-poc/pb/message"
+	ds "github.com/ipfs/go-datastore"
+	dsync "github.com/ipfs/go-datastore/sync"
+	host "github.com/libp2p/go-libp2p-host"
+	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
+
+	pbevent "github.com/ethresearch/sharding-p2p-poc/pb/event"
+	pbmsg "github.com/ethresearch/sharding-p2p-poc/pb/message"
 	"google.golang.org/grpc"
+
 	// gologging "github.com/whyrusleeping/go-logging"
+	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 )
 
 var nodeCount int
@@ -113,11 +122,22 @@ func connect(t *testing.T, ctx context.Context, a, b *Node) {
 	time.Sleep(time.Millisecond * 100)
 }
 
+var mn mocknet.Mocknet
+
 func makeNodes(t *testing.T, ctx context.Context, number int) []*Node {
-	nodes := []*Node{}
+	mn = mocknet.New(ctx)
 	for i := 0; i < number; i++ {
-		nodes = append(nodes, makeUnbootstrappedNode(t, ctx, i))
+		_, err := mn.GenPeer()
+		if err != nil {
+			t.Errorf("failed to GenPeer: %v", err)
+		}
 	}
+	err := mn.LinkAll()
+	if err != nil {
+		t.Errorf("failed to link all hosts: %v", err)
+	}
+	hosts := mn.Hosts()
+	nodes, err := makeNodesFromHosts(ctx, hosts)
 	time.Sleep(time.Millisecond * 100)
 	return nodes
 }
@@ -669,4 +689,73 @@ func TestRequestCollationWithRPCEventNotifier(t *testing.T) {
 	if collation != nil {
 		t.Errorf("collation should be nil because it it not found in the mock event server")
 	}
+}
+
+func makeNodeFromHost(
+	ctx context.Context,
+	h host.Host,
+	eventNotifier EventNotifier,
+	doBootstrapping bool,
+	bootstrapPeers []pstore.PeerInfo) (*Node, error) {
+	// Construct a datastore (needed by the DHT). This is just a simple, in-memory thread-safe datastore.
+	dstore := dsync.MutexWrap(ds.NewMapDatastore())
+
+	// Make the DHT
+	dht := kaddht.NewDHT(ctx, h, dstore)
+
+	// Make the routed host
+	routedHost := rhost.Wrap(h, dht)
+	if doBootstrapping {
+		// try to connect to the chosen nodes
+		bootstrapConnect(ctx, routedHost, bootstrapPeers)
+
+		err := dht.Bootstrap(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	node := NewNode(ctx, routedHost, eventNotifier)
+	return node, nil
+}
+
+func makeNodesFromHosts(
+	ctx context.Context,
+	hosts []host.Host) ([]*Node, error) {
+	nodes := make([]*Node, 0, len(hosts))
+	for _, h := range hosts {
+		node, err := makeNodeFromHost(ctx, h, nil, false, nil)
+		if err != nil {
+			return nil, err
+		}
+		nodes = append(nodes, node)
+	}
+	return nodes, nil
+}
+
+func TestMockNet(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	mn := mocknet.New(ctx)
+	numPeers := 100
+	for i := 0; i < numPeers; i++ {
+		_, err := mn.GenPeer()
+		if err != nil {
+			t.Errorf("failed to GenPeer: %v", err)
+		}
+	}
+	hosts := mn.Hosts()
+	nodes, err := makeNodesFromHosts(ctx, hosts)
+	if err != nil {
+		t.Errorf("failed to make nodes: %v", err)
+	}
+	err = mn.LinkAll()
+	if err != nil {
+		t.Errorf("failed to link all hosts: %v", err)
+	}
+	err = mn.ConnectAllButSelf()
+	if err != nil {
+		t.Errorf("failed to connect all hosts: %v", err)
+	}
+	// log.Println(nodes)
+	log.Print(nodes[0].Network().Peers())
 }
