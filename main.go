@@ -236,7 +236,6 @@ func makeNode(
 	eventNotifier EventNotifier,
 	doBootstrapping bool,
 	bootstrapPeers []pstore.PeerInfo) (*Node, error) {
-	// FIXME: should be set to localhost if we don't want to expose it to outside
 	listenAddrString := fmt.Sprintf("/ip4/%v/tcp/%v", listenIP, listenPort)
 
 	priv, _, err := makeKey(randseed)
@@ -263,18 +262,11 @@ func makeNode(
 	// Make the routed host
 	routedHost := rhost.Wrap(basicHost, dht)
 
-	if doBootstrapping {
-		// try to connect to the chosen nodes
-		bootstrapConnect(ctx, routedHost, bootstrapPeers)
-
-		err = dht.Bootstrap(ctx)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	// Make a host that listens on the given multiaddress
-	node := NewNode(ctx, routedHost, eventNotifier)
+	node := NewNode(ctx, routedHost, dht, eventNotifier)
+	if doBootstrapping {
+		node.StartBootstrapping(ctx, bootstrapPeers)
+	}
 
 	return node, nil
 }
