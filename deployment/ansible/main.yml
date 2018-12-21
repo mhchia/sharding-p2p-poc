@@ -1,25 +1,4 @@
 ---
-- name: setup servers
-  hosts: nodes, log_collector
-  become: true
-  gather_facts: False
-  roles:
-    - role: python
-    - role: docker
-
-- name: build images
-  hosts: nodes
-  tasks:
-  - include_role:
-      name: common
-      tasks_from: build_image
-
-- name: spin up log_collector
-  hosts: log_collector
-  gather_facts: false
-  roles:
-    - role: log_collector
-
 - name: Generate commands
   hosts: localhost
   tasks:

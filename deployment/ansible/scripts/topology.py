@@ -26,7 +26,7 @@ class Peer:
 
 
 def parse_inventory(line):
-    host, _start, _end = line.strip().split(" ")
+    host, _, _start, _end = line.strip().split(" ")
     start = int(_start.split("=")[1])
     end = int(_end.split("=")[1])
     return host, start, end
